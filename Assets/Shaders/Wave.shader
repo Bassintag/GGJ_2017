@@ -61,7 +61,7 @@
 				float4 gradient = float4(1,1,1,c);
 				float4 fade = float4(1,1,1,(1-_Range)*_Fade);
 				c *= _Intensity;
-				return (float4(c,c,c,1) + o * gradient) * fade;
+				return (float4(c,c,c,1)+o*gradient)*fade;
 			}
 			ENDCG
 		}
