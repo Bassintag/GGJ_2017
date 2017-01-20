@@ -4,7 +4,7 @@
 	{
 		_Range("Range", Range(0.0, 1.0)) = 0.5
 		_Width("Width", Range(0.0, 1.0)) = 0.1
-		_Intensity("_Intensity", Range(0.0, 1.0)) = 0.5
+		_Intensity("Intensity", Range(0.0, 1.0)) = 0.5
 		_Size("Size", Float) = 1.
 		_Color("Color", Color) = (1,1,1,1)
 	}
