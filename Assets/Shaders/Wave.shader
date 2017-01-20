@@ -5,6 +5,7 @@
 		_Range("Range", Range(0.0, 1.0)) = 0.5
 		_Width("Width", Range(0.0, 1.0)) = 0.1
 		_Intensity("Intensity", Range(0.0, 1.0)) = 0.5
+		_Fade("Fade", Range(0.0, 1.0)) = 0.5
 		_Size("Size", Float) = 1.
 		_Color("Color", Color) = (1,1,1,1)
 	}
@@ -31,6 +32,7 @@
 			float _Range;
 			float _Width;
 			float _Intensity;
+			float _Fade;
 			float _Size;
 			fixed4 _Color;
 
@@ -52,9 +54,10 @@
 					discard;
 				}
 				float c = (dist-_Range)/(_Width/2);
-				float4 fade = float4(1,1,1,c);
+				float4 gradient = float4(1,1,1,c);
+				float4 fade = float4(1,1,1,(1-_Range)*_Fade);
 				c *= _Intensity;
-				return float4(c,c,c,1) + o * fade;
+				return (float4(c,c,c,1) + o * gradient) * fade;
 			}
 			ENDCG
 		}
