@@ -5,18 +5,24 @@ using UnityEngine;
 public class WaveEmitter : MonoBehaviour {
 
     public float range = 5f;
-    public float wave_speed = 1f;
+    public float wave_speed = 10f;
     public float wave_cooldown = 2f;
+    public bool activated = true;
+
+    private float current_wave;
 
     protected Mesh _mesh;
 
     private MeshFilter _filter;
+    private MeshRenderer _renderer;
 
-	void Start ()
+    void Start ()
     {
         _mesh = new Mesh();
         _filter = GetComponent<MeshFilter>();
         _filter.mesh = _mesh;
+        _renderer = GetComponent<MeshRenderer>();
+        current_wave = 0;
 	}
 	
     List<Vector2> GetRaycastTargets()
@@ -88,10 +94,15 @@ public class WaveEmitter : MonoBehaviour {
         _mesh.RecalculateNormals();
     }
 
-    [ExecuteInEditMode]
     void Update ()
     {
         RecalculateMesh();
+        if (!activated && current_wave == 0)
+            return;
+        current_wave += wave_speed * Time.deltaTime;
+        if (current_wave > range)
+            current_wave = 0;
+        _renderer.material.SetFloat("_Range", current_wave / range);
 	}
 
     void OnDrawGizmos()
