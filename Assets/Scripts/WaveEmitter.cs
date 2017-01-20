@@ -8,10 +8,18 @@ public class WaveEmitter : MonoBehaviour {
     public float wave_speed = 10f;
     public float wave_cooldown = 2f;
     public bool activated = true;
+    [HideInInspector]
+    public int destroy_after = -1;
+
+    private Vector2 pos2 { get { return (transform.position); } }
+    private List<Vector2> saved_points;
+    private float range_squared { get { return (range * range); } }
+    private float delta_speed;
 
     private float current_wave;
+    private float current_wave_cooldown;
 
-    protected Mesh _mesh;
+    private Mesh _mesh;
 
     private MeshFilter _filter;
     private MeshRenderer _renderer;
@@ -22,7 +30,9 @@ public class WaveEmitter : MonoBehaviour {
         _filter = GetComponent<MeshFilter>();
         _filter.mesh = _mesh;
         _renderer = GetComponent<MeshRenderer>();
+        saved_points = new List<Vector2>();
         current_wave = 0;
+        current_wave_cooldown = 0;
 	}
 	
     List<Vector2> GetRaycastTargets()
@@ -61,31 +71,45 @@ public class WaveEmitter : MonoBehaviour {
         raycast_targets.Add(transform.position + new Vector3(range, -range));
         raycast_targets.Add(transform.position + new Vector3(-range, range));
         raycast_targets.Add(transform.position + new Vector3(range, range));
-        raycast_targets.Sort(new ClockwiseVector2Comparer(transform.position));
         return (raycast_targets);
     }
 
-    void RecalculateMesh()
+    List<Vector2> GetRaycastHitPoints()
     {
         List<Vector2> raycast_targets = GetRaycastTargets();
-        Vector2 position = transform.position;
-        Vector3[] vertices = new Vector3[raycast_targets.Count + 1];
-        Vector2[] uvs = new Vector2[raycast_targets.Count + 1];
-        int[] triangles = new int[raycast_targets.Count * 3];
-        uvs[0] = new Vector2(0.5f, 0.5f);
-        vertices[0] = new Vector2(0f, 0f);
-        for (int i = 0; i < raycast_targets.Count; i++)
+        List<Vector2> raycast_points = new List<Vector2>();
+        foreach (Vector2 target in raycast_targets)
         {
-            Vector2 target = raycast_targets[i];
-            RaycastHit2D hit = Physics2D.Raycast(position, target - position, range * 2, LayerMask.NameToLayer("Walls"));
+            RaycastHit2D hit = Physics2D.Raycast(pos2, target - pos2, range * 2, LayerMask.NameToLayer("Walls"));
             Vector2 point = hit.point;
             if (point.magnitude == 0)
-                point = position + (target - position).normalized * range * 2;
-            vertices[i + 1] = point - position;
+                point = pos2 + (target - pos2).normalized * range * 2;
+            float dist = Vector2.Distance(point, transform.position);
+            if (dist > range && dist <= range + delta_speed)
+                saved_points.Add(point);
+        }
+        raycast_points.AddRange(saved_points);
+        raycast_points.Sort(new ClockwiseVector2Comparer(transform.position));
+        return (raycast_points);
+    }
+
+    void RecalculateMesh(float delta_speed)
+    {
+        List<Vector2> raycast_points = GetRaycastHitPoints();
+        int points_count = raycast_points.Count;
+        Vector3[] vertices = new Vector3[points_count + 1];
+        Vector2[] uvs = new Vector2[points_count + 1];
+        int[] triangles = new int[points_count * 3];
+        uvs[0] = new Vector2(0.5f, 0.5f);
+        vertices[0] = new Vector2(0f, 0f);
+        for (int i = 0; i < raycast_points.Count; i++)
+        {
+            Vector2 point = raycast_points[i];
+            vertices[i + 1] = point - pos2;
             uvs[i + 1] = new Vector2(vertices[i + 1].x / range / 2f + 0.5f, vertices[i + 1].y / range / 2f + 0.5f);
             triangles[i * 3] = i + 1;
             triangles[i * 3 + 1] = 0;
-            triangles[i * 3 + 2] = (i + 1) % raycast_targets.Count + 1;
+            triangles[i * 3 + 2] = (i + 1) % points_count + 1;
         }
         _mesh.Clear();
         _mesh.vertices = vertices;
@@ -96,12 +120,26 @@ public class WaveEmitter : MonoBehaviour {
 
     void Update ()
     {
-        RecalculateMesh();
         if (!activated && current_wave == 0)
             return;
-        current_wave += wave_speed * Time.deltaTime;
+        delta_speed = wave_speed * Time.deltaTime;
+        RecalculateMesh(delta_speed);
+        if (current_wave_cooldown > 0)
+        {
+            current_wave_cooldown -= Time.deltaTime;
+            return;
+        }
+        current_wave += delta_speed;
         if (current_wave > range)
+        {
+            saved_points.Clear();
             current_wave = 0;
+            current_wave_cooldown = wave_cooldown;
+            if (destroy_after > 0)
+                destroy_after--;
+            if (destroy_after == 0)
+                Destroy(gameObject);
+        }
         _renderer.material.SetFloat("_Range", current_wave / range);
 	}
 
