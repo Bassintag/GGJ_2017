@@ -84,14 +84,15 @@ public class WaveEmitter : MonoBehaviour {
             Vector2 point = hit.point;
             if (point.magnitude == 0)
                 point = pos2 + (target - pos2).normalized * range * 2;
-            float dist = Vector2.Distance(point, transform.position);
-            if (dist > current_wave)
-            {
-                if (dist <= current_wave + delta_speed)
-                    saved_points.Add(point);
-                else
-                    raycast_points.Add(point);
-            }
+            /*            float dist = Vector2.Distance(point, transform.position);
+                        if (dist > current_wave)
+                        {
+                            if (dist <= current_wave + delta_speed)
+                                saved_points.Add(point);
+                            else
+                                raycast_points.Add(point);
+                        }*/
+            raycast_points.Add(point);
         }
         raycast_points.AddRange(saved_points);
         raycast_points.Sort(new ClockwiseVector2Comparer(transform.position));

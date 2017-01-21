@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class Player : MonoBehaviour {
 
     enum Tristate
@@ -14,7 +15,7 @@ public class Player : MonoBehaviour {
     };
 
 
-public float maxSpeed = 10f;
+    public float maxSpeed = 10f;
     private Rigidbody2D player;
     private Vector3 _origPos;
 
@@ -34,11 +35,11 @@ public float maxSpeed = 10f;
                 moveVertical = Input.GetAxis("Vertical");
 
         player.velocity = new Vector2(maxSpeed * moveHorizon, maxSpeed * moveVertical);
-        Vector3 moveDirection = this.gameObject.transform.position - _origPos;
+        Vector3 moveDirection = player.velocity.normalized;
 
         if (moveDirection != Vector3.zero)
         {
-            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg % 180;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }
