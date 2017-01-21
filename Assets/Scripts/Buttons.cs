@@ -9,7 +9,8 @@ public class Buttons : MonoBehaviour {
     public Sprite _up;
     public bool _oncePush = false;
     public Door door;
-    private bool _isBlock = false;
+    private bool _isBlock = false,
+        _isPlayer = false;
 
     void Start () {
         _renderer = GetComponent<SpriteRenderer>();	
@@ -24,6 +25,8 @@ public class Buttons : MonoBehaviour {
         }
         if (other.tag != "Player")
             _isBlock = true;
+        if (other.tag == "Player")
+            _isPlayer = true;
     }
 
 
@@ -40,13 +43,15 @@ public class Buttons : MonoBehaviour {
 
     void OnTriggerExit2D(Collider2D other)
     {
-        if (!_isBlock && _renderer.sprite == _down && !_oncePush)
+        if (other.tag != "Player")
+            _isBlock = false;
+        if (other.tag == "Player")
+            _isPlayer = false;
+        if (!_isBlock && !_isPlayer && _renderer.sprite == _down && !_oncePush)
         {
             _renderer.sprite = _up;
             door.push += 1;
         }
-        if (other.tag != "Player")
-            _isBlock = false;
     }
 
     public void reset()
@@ -54,6 +59,7 @@ public class Buttons : MonoBehaviour {
         if (_renderer.sprite == _down)
         {
             _isBlock = false;
+            _isPlayer = false;
             _renderer.sprite = _up;
             door.push += 1;
         }

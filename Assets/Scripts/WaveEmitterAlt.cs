@@ -15,8 +15,10 @@ public class WaveEmitterAlt : MonoBehaviour {
     [HideInInspector]
     public int destroy_after = -1;
     public float reset_delay = .5f;
+    [HideInInspector]
+    public MovingEmitter moving_emitter;
 
-    public DeathSound deathSound;
+    private DeathSound _death_sound;
 
     private Vector2 pos2 { get { return (transform.position); } }
     private float delta_speed;
@@ -28,6 +30,7 @@ public class WaveEmitterAlt : MonoBehaviour {
     private bool[] is_fixed;
 
     private bool emitting = false;
+    private bool resetting = false;
     private bool should_emit { get { return emitting || auto_emit; } }
 
     private Mesh _mesh;
@@ -54,6 +57,7 @@ public class WaveEmitterAlt : MonoBehaviour {
         current_wave_cooldown = 0;
         _camera = FindObjectOfType<CameraShader>();
         _player = FindObjectOfType<Player>();
+        _death_sound = FindObjectOfType<DeathSound>();
         OnEmit();
     }
 
@@ -74,12 +78,25 @@ public class WaveEmitterAlt : MonoBehaviour {
             button.reset();
         _camera.aberration = 0.0f;
         _camera.fadeout = 0.0f;
+        resetting = false;
+        if (moving_emitter != null)
+        {
+            moving_emitter.Reset();
+            moving_emitter.paused = false;
+        }
     }
 
     void OnPlayerHit()
     {
-        deathSound.Play();
+        if (_player == null || _player.gameObject == null)
+            _player = FindObjectOfType<Player>();
+        _death_sound.Play();
         _player.gameObject.SetActive(false);
+        resetting = true;
+        if (moving_emitter != null)
+        {
+            moving_emitter.paused = true;
+        }
         StartCoroutine(Reset());
     }
 
@@ -164,6 +181,12 @@ public class WaveEmitterAlt : MonoBehaviour {
     {
         if (!should_emit)
             return;
+        if (destroy_after == 0)
+        {
+            if (resetting)
+                return ;
+            Destroy(gameObject);
+        }
         delta_speed = wave_speed * Time.deltaTime;
         RecalculateMesh();
         if (current_wave_cooldown > 0 && auto_emit)
@@ -188,8 +211,6 @@ public class WaveEmitterAlt : MonoBehaviour {
             }
             if (destroy_after > 0)
                 destroy_after--;
-            if (destroy_after == 0)
-                Destroy(gameObject);
         }
         _renderer.material.SetFloat("_Range", current_wave / range);
         _renderer.material.SetFloat("_Width", width / range);
