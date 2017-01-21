@@ -131,6 +131,7 @@ public class WaveEmitterAlt : MonoBehaviour {
                     if (closest.CompareTag("Player"))
                     {
                         OnPlayerHit();
+                        continue;
                     }
                     is_fixed[i] = true;
                     continue;
