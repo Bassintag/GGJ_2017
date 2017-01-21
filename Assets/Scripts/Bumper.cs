@@ -15,6 +15,7 @@ public class Bumper : MonoBehaviour {
 
     void Start () {
         BPM = initialBPM;
+        nextActionTime = 0;
     }
 
     void Update () {
@@ -23,8 +24,9 @@ public class Bumper : MonoBehaviour {
 
     void BumpSound()
     {
-        if (Time.time > (nextActionTime * 2))
+        if (nextActionTime <= 0)
         {
+            ColorProvider.instance.NextColor();
             nextActionTime += _period;
             foreach (SpriteRenderer renderer in FindObjectsOfType<SpriteRenderer>())
             {
@@ -34,7 +36,10 @@ public class Bumper : MonoBehaviour {
                     renderer.color = ColorProvider.instance.GetColor();
             }
             onBeat.Invoke();
-            ColorProvider.instance.NextColor();
+        }
+        else
+        {
+            nextActionTime -= Time.deltaTime;
         }
     }
 }
