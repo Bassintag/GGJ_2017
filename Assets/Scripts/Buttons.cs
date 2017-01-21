@@ -9,16 +9,12 @@ public class Buttons : MonoBehaviour {
     public Sprite _up;
     public bool _oncePush = false;
     public Door door;
+    private bool _isBlock = false;
 
     void Start () {
         _renderer = GetComponent<SpriteRenderer>();	
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
     void OnTriggerEnter2D(Collider2D other)
     {
         if (_renderer.sprite == _up)
@@ -26,6 +22,8 @@ public class Buttons : MonoBehaviour {
             _renderer.sprite = _down;
             door.push -= 1;
         }
+        if (other.tag != "Player")
+            _isBlock = true;
     }
 
 
@@ -36,21 +34,26 @@ public class Buttons : MonoBehaviour {
             _renderer.sprite = _down;
             door.push -= 1;
         }
+        if (!_isBlock && other.tag != "Player")
+            _isBlock = true;
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
-        if (_renderer.sprite == _down && !_oncePush)
+        if (!_isBlock && _renderer.sprite == _down && !_oncePush)
         {
             _renderer.sprite = _up;
             door.push += 1;
         }
+        if (other.tag != "Player")
+            _isBlock = false;
     }
 
     public void reset()
     {
         if (_renderer.sprite == _down)
         {
+            _isBlock = false;
             _renderer.sprite = _up;
             door.push += 1;
         }
