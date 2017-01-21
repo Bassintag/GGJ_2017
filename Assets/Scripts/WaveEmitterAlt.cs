@@ -10,7 +10,7 @@ public class WaveEmitterAlt : MonoBehaviour {
     public float wave_speed = 10f;
     public float wave_cooldown = 2f;
     public float width = 1f;
-    public bool activated = true;
+    public bool auto_emit = true;
     public int mesh_res = 360;
     [HideInInspector]
     public int destroy_after = -1;
@@ -23,6 +23,9 @@ public class WaveEmitterAlt : MonoBehaviour {
 
     private float[] distances;
     private bool[] is_fixed;
+
+    private bool emitting = false;
+    private bool should_emit { get { return emitting || auto_emit; } }
 
     private Mesh _mesh;
 
@@ -111,13 +114,19 @@ public class WaveEmitterAlt : MonoBehaviour {
         _mesh.RecalculateNormals();
     }
 
+    public void Emit()
+    {
+        current_wave = 0;
+        emitting = true;
+    }
+
     void Update()
     {
-        if (!activated && current_wave == 0)
+        if (!should_emit)
             return;
         delta_speed = wave_speed * Time.deltaTime;
         RecalculateMesh();
-        if (current_wave_cooldown > 0)
+        if (current_wave_cooldown > 0 && auto_emit)
         {
             current_wave_cooldown -= Time.deltaTime;
             return;
@@ -126,7 +135,10 @@ public class WaveEmitterAlt : MonoBehaviour {
         if (current_wave > range)
         {
             current_wave = 0;
-            current_wave_cooldown = wave_cooldown;
+            if (!auto_emit)
+                emitting = false;
+            else
+                current_wave_cooldown = wave_cooldown;
             for (int i = 0; i < mesh_res; i++)
             {
                 distances[i] = range;

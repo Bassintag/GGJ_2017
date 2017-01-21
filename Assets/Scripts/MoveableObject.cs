@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveObject : MonoBehaviour {
+public class MoveableObject : MonoBehaviour {
     private Rigidbody2D _object;
     // Use this for initialization
     void Start () {

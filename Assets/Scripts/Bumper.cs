@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Renderer)]
+[RequireComponent(typeof(WaveEmitterAlt))]
 public class Bumper : MonoBehaviour {
 
     private float nextActionTime = 0.0f;
-    public float _period;
-    private Renderer _renderer;
+    public float initialBPM = 140;
+    public float BPM { get { return 60 / _period; } set { _period = 60 / value; } }
+    private float _period;
 
+    private WaveEmitterAlt _emitter;
     // Use this for initialization
     void Start () {
-        _renderer = GetComponent<Renderer>();
-        setBpm();
+        _emitter = GetComponent<WaveEmitterAlt>();
+        BPM = initialBPM;
     }
 
     // Update is called once per frame
@@ -20,20 +22,12 @@ public class Bumper : MonoBehaviour {
         BumpSound();
     }
 
-    public void setBpm(float bpm = 140)
-    {
-        _period = (float)(60 / bpm);
-    }
-
     void BumpSound()
     {
         if (Time.time > (nextActionTime * 2))
         {
             nextActionTime += _period;
-            if (_renderer.material.color == Color.black)
-                _renderer.material.color = Color.white;
-            else
-                _renderer.material.color = Color.black;
+            _emitter.Emit();
         }
     }
 }
