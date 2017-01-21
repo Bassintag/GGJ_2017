@@ -70,6 +70,8 @@ public class WaveEmitterAlt : MonoBehaviour {
         _player.gameObject.SetActive(true);
         foreach (StateResetter resetter in FindObjectsOfType<StateResetter>())
             resetter.Reset();
+        foreach (Buttons button in FindObjectsOfType<Buttons>())
+            button.reset();
         _camera.aberration = 0.0f;
         _camera.fadeout = 0.0f;
     }
