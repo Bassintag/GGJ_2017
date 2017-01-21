@@ -8,7 +8,6 @@ public class Buttons : MonoBehaviour {
     public Sprite _down;
     public Sprite _up;
     public bool _oncePush = false;
-    private bool _isPushed = false;
     public Door door;
 
     void Start () {
@@ -20,17 +19,11 @@ public class Buttons : MonoBehaviour {
 		
 	}
 
-    bool getIsPushed()
-    {
-        return _isPushed;
-    }
-
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (_oncePush && _renderer.sprite == _up)
+        if (_renderer.sprite == _up)
         {
             _renderer.sprite = _down;
-            _isPushed = true;
             door.push -= 1;
         }
     }
@@ -38,9 +31,8 @@ public class Buttons : MonoBehaviour {
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (_renderer.sprite == _up && !_oncePush)
+        if (_renderer.sprite == _up)
         {
-            _isPushed = true;
             _renderer.sprite = _down;
             door.push -= 1;
         }
@@ -51,7 +43,6 @@ public class Buttons : MonoBehaviour {
         if (_renderer.sprite == _down && !_oncePush)
         {
             _renderer.sprite = _up;
-            _isPushed = false;
             door.push += 1;
         }
     }
@@ -61,7 +52,6 @@ public class Buttons : MonoBehaviour {
         if (_renderer.sprite == _down)
         {
             _renderer.sprite = _up;
-            _isPushed = false;
             door.push += 1;
         }
     }
