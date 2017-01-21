@@ -5,16 +5,17 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class SplashController : MonoBehaviour {
+    public Image splashImage;
+    public string menuSceneName;
     public float fadeInStart;
     public float fadeInEnd;
     public float fadeOutStart;
     public float fadeOutEnd;
     public float sceneSwitch;
-    private Image img;
     private float time;
 
     void Start () {
-        img = GetComponent<Image>();
+
         time = 0.0f;
 	}
 	
@@ -35,8 +36,8 @@ public class SplashController : MonoBehaviour {
         }
         else if (time > sceneSwitch)
         {
-            SceneManager.LoadScene("Menu");
+            SceneManager.LoadScene(menuSceneName);
         }
-        img.material.SetFloat("_Fade", fade);
+        splashImage.material.SetFloat("_Fade", fade);
 	}
 }
