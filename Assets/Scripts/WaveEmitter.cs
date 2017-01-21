@@ -85,8 +85,13 @@ public class WaveEmitter : MonoBehaviour {
             if (point.magnitude == 0)
                 point = pos2 + (target - pos2).normalized * range * 2;
             float dist = Vector2.Distance(point, transform.position);
-            if (dist > range && dist <= range + delta_speed)
-                saved_points.Add(point);
+            if (dist > current_wave)
+            {
+                if (dist <= current_wave + delta_speed)
+                    saved_points.Add(point);
+                else
+                    raycast_points.Add(point);
+            }
         }
         raycast_points.AddRange(saved_points);
         raycast_points.Sort(new ClockwiseVector2Comparer(transform.position));
@@ -147,6 +152,8 @@ public class WaveEmitter : MonoBehaviour {
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, range);
+        foreach (Vector2 p in saved_points)
+            Gizmos.DrawWireCube(p, new Vector3(1f, 1f));
     }
 
     void OnDrawGizmosSelected()

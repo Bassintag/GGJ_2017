@@ -53,13 +53,13 @@
 			{
 				fixed4 o = i.color;
 				float dist = sqrt((pow(i.uv.x - 0.5, 2) + pow(i.uv.y - 0.5, 2))) / _Size;
-				if (dist < _Range - _Width / 2 || dist > _Range + _Width / 2)
+				if (dist < _Range - _Width || dist > _Range)
 				{
 					discard;
 				}
-				float c = (dist-_Range)/(_Width/2);
+				float c = (dist-_Range)/(_Width);
 				float4 gradient = float4(1,1,1,c);
-				float4 fade = float4(1,1,1,(1-_Range)*_Fade);
+				float4 fade = float4(1,1,1,1-_Range*_Fade);
 				c *= _Intensity;
 				return (float4(c,c,c,1) + o * gradient) * fade;
 			}
