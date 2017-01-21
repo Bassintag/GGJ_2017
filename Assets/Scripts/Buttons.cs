@@ -55,4 +55,14 @@ public class Buttons : MonoBehaviour {
             door.push += 1;
         }
     }
+
+    public void reset()
+    {
+        if (_renderer.sprite == _down)
+        {
+            _renderer.sprite = _up;
+            _isPushed = false;
+            door.push += 1;
+        }
+    }
 }
