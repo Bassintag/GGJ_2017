@@ -16,6 +16,8 @@ public class WaveEmitterAlt : MonoBehaviour {
     public int destroy_after = -1;
     public float reset_delay = .5f;
 
+    public DeathSound deathSound;
+
     private Vector2 pos2 { get { return (transform.position); } }
     private float delta_speed;
 
@@ -74,6 +76,7 @@ public class WaveEmitterAlt : MonoBehaviour {
 
     void OnPlayerHit()
     {
+        deathSound.Play();
         _player.gameObject.SetActive(false);
         StartCoroutine(Reset());
     }
