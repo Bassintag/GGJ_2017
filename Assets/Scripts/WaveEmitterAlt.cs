@@ -14,6 +14,7 @@ public class WaveEmitterAlt : MonoBehaviour {
     public int mesh_res = 360;
     [HideInInspector]
     public int destroy_after = -1;
+    public float reset_delay = .5f;
 
     private Vector2 pos2 { get { return (transform.position); } }
     private float delta_speed;
@@ -31,6 +32,8 @@ public class WaveEmitterAlt : MonoBehaviour {
 
     private MeshFilter _filter;
     private MeshRenderer _renderer;
+    private CameraShader _camera;
+    private Player _player;
 
     void Start()
     {
@@ -47,13 +50,32 @@ public class WaveEmitterAlt : MonoBehaviour {
         _renderer = GetComponent<MeshRenderer>();
         current_wave = 0;
         current_wave_cooldown = 0;
+        _camera = FindObjectOfType<CameraShader>();
+        _player = FindObjectOfType<Player>();
         OnEmit();
+    }
+
+    IEnumerator Reset()
+    {
+        float t = 0;
+        while (t < reset_delay)
+        {
+            t += Time.deltaTime;
+            _camera.aberration = 0.005f * Mathf.Tan(t * 100);
+            _camera.fadeout = t / reset_delay;
+            yield return new WaitForEndOfFrame();
+        }
+        _player.gameObject.SetActive(true);
+        foreach (StateResetter resetter in FindObjectsOfType<StateResetter>())
+            resetter.Reset();
+        _camera.aberration = 0.0f;
+        _camera.fadeout = 0.0f;
     }
 
     void OnPlayerHit()
     {
-        foreach (StateResetter resetter in FindObjectsOfType<StateResetter>())
-            resetter.Reset();
+        _player.gameObject.SetActive(false);
+        StartCoroutine(Reset());
     }
 
     void OnEmit()
