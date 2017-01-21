@@ -76,7 +76,7 @@ public class WaveEmitterAlt : MonoBehaviour {
                 {
                     if (closest.CompareTag("Player"))
                     {
-                        Debug.Log("DED");
+                       // Debug.Log("DED");
                     }
                     is_fixed[i] = true;
                     continue;
