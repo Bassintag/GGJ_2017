@@ -25,5 +25,5 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
-# Test scene
-Test.unity
+# Test files
+[Tt]est*
