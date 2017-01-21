@@ -25,6 +25,7 @@ public class Bumper : MonoBehaviour {
     {
         if (Time.time > (nextActionTime * 2))
         {
+            ColorProvider.instance.NextColor();
             nextActionTime += _period;
             foreach (SpriteRenderer renderer in FindObjectsOfType<SpriteRenderer>())
             {
@@ -34,7 +35,6 @@ public class Bumper : MonoBehaviour {
                     renderer.color = ColorProvider.instance.GetColor();
             }
             onBeat.Invoke();
-            ColorProvider.instance.NextColor();
         }
     }
 }

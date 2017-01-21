@@ -94,9 +94,7 @@ public class WaveEmitterAlt : MonoBehaviour {
         _player.gameObject.SetActive(false);
         resetting = true;
         if (moving_emitter != null)
-        {
             moving_emitter.paused = true;
-        }
         StartCoroutine(Reset());
     }
 
@@ -184,7 +182,7 @@ public class WaveEmitterAlt : MonoBehaviour {
         if (destroy_after == 0)
         {
             if (resetting)
-                return ;
+                return;
             Destroy(gameObject);
         }
         delta_speed = wave_speed * Time.deltaTime;
