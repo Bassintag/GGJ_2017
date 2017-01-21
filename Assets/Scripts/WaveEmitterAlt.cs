@@ -47,6 +47,18 @@ public class WaveEmitterAlt : MonoBehaviour {
         _renderer = GetComponent<MeshRenderer>();
         current_wave = 0;
         current_wave_cooldown = 0;
+        OnEmit();
+    }
+
+    void OnPlayerHit()
+    {
+        foreach (StateResetter resetter in FindObjectsOfType<StateResetter>())
+            resetter.Reset();
+    }
+
+    void OnEmit()
+    {
+        _renderer.material.SetColor("_Color", ColorProvider.instance.GetColor(2));
     }
 
     List<Vector2> GetRaycastHitPoints()
@@ -76,7 +88,7 @@ public class WaveEmitterAlt : MonoBehaviour {
                 {
                     if (closest.CompareTag("Player"))
                     {
-                        Debug.Log("DED");
+                        OnPlayerHit();
                     }
                     is_fixed[i] = true;
                     continue;
@@ -118,6 +130,7 @@ public class WaveEmitterAlt : MonoBehaviour {
     {
         current_wave = 0;
         emitting = true;
+        OnEmit();
     }
 
     void Update()
@@ -129,6 +142,8 @@ public class WaveEmitterAlt : MonoBehaviour {
         if (current_wave_cooldown > 0 && auto_emit)
         {
             current_wave_cooldown -= Time.deltaTime;
+            if (current_wave_cooldown <= 0)
+                OnEmit();
             return;
         }
         current_wave += delta_speed;
