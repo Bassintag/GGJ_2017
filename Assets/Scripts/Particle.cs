@@ -24,6 +24,7 @@ public class Particle : MonoBehaviour {
             Destroy(gameObject);
         life_span -= Time.deltaTime;
         _angle += _rotation_speed * Time.deltaTime;
+        transform.eulerAngles = new Vector3(0, 0, _angle);
         transform.position += (Vector3)velocity * Time.deltaTime;
 	}
 }

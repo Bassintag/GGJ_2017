@@ -96,6 +96,16 @@ public class WaveEmitterAlt : MonoBehaviour {
         if (moving_emitter != null)
             moving_emitter.paused = true;
         UIManager.instance.AddDeath();
+        for (int i = 0; i < (int)Random.Range(3, 6); i++)
+        {
+            Particle p = _player.particle_prefab;
+            p.transform.position = _player.transform.position;
+            float angle = Mathf.Atan2(_player.transform.position.x - transform.position.x,
+                                      _player.transform.position.y - transform.position.y);
+            angle += Random.Range(-Mathf.PI / 8, Mathf.PI / 8);
+            p.velocity = new Vector3(Mathf.Sin(angle), Mathf.Cos(angle)) * Random.Range(10,20);
+            Instantiate(p);
+        }
         StartCoroutine(Reset());
     }
 
