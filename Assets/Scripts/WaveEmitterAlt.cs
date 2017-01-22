@@ -76,6 +76,8 @@ public class WaveEmitterAlt : MonoBehaviour {
             resetter.Reset();
         foreach (Buttons button in FindObjectsOfType<Buttons>())
             button.reset();
+        foreach (PathFollower follower in FindObjectsOfType<PathFollower>())
+            follower.Reset();
         _camera.aberration = 0.0f;
         _camera.fadeout = 0.0f;
         resetting = false;
@@ -103,7 +105,7 @@ public class WaveEmitterAlt : MonoBehaviour {
             float angle = Mathf.Atan2(_player.transform.position.x - transform.position.x,
                                       _player.transform.position.y - transform.position.y);
             angle += Random.Range(-Mathf.PI / 8, Mathf.PI / 8);
-            p.velocity = new Vector3(Mathf.Sin(angle), Mathf.Cos(angle)) * Random.Range(10,20);
+            p.velocity = new Vector3(Mathf.Sin(angle), Mathf.Cos(angle)) * Random.Range(wave_speed - 5, wave_speed + 5);
             Instantiate(p);
         }
         StartCoroutine(Reset());

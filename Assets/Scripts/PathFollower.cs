@@ -16,17 +16,22 @@ public class PathFollower : MonoBehaviour {
 
 	void Start ()
     {
-        transform.position = target;
-        _target_id = 0;
+        Reset();
 	}
-	
-	void Update ()
+
+    public void Reset()
+    {
+        _target_id = 0;
+        transform.position = target;
+    }
+
+    void Update ()
     {
         Vector2 rel = target - (Vector2)transform.position;
         float rel_speed = speed * Time.deltaTime;
+            transform.eulerAngles = new Vector3(0, 0, Mathf.Atan2(-transform.position.y + target.y, -transform.position.x + target.x) * Mathf.Rad2Deg);
         if (rel.magnitude < rel_speed)
         {
-            transform.eulerAngles = new Vector3(0, 0, Mathf.Atan2(transform.position.y - target.y, transform.position.x - target.x) * Mathf.Rad2Deg);
             transform.position = target;
             if (looping || !_reversed)
             {
