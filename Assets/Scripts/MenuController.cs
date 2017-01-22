@@ -7,13 +7,12 @@ using UnityEngine.SceneManagement;
 public class MenuController : MonoBehaviour {
     public Button playButton;
     public Button exitButton;
-    public SceneLoader loader;
 
     public void PlayButtonClick()
     {
         playButton.interactable = false;
         UIManager.instance.Reset();
-        loader.LoadScene();
+        SceneLoader.instance.LoadScene("Level-1");
     }
 
     public void ExitButtonClick()

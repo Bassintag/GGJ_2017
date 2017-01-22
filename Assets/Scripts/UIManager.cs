@@ -30,6 +30,6 @@ public class UIManager : MonoBehaviour {
 	
 	void Update () {
         if (Input.GetKeyDown(KeyCode.Escape))
-            Application.Quit();
+            SceneLoader.instance.LoadScene("Menu");
 	}
 }

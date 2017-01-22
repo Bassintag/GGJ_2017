@@ -5,13 +5,13 @@ using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class EndLevel : MonoBehaviour {
-    public SceneLoader lvlLoader;
+    public string nextLevel;
 
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag == "Player")
         {
-            lvlLoader.LoadScene();
+            SceneLoader.instance.LoadScene(nextLevel);
         }
     }   
 }
