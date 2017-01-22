@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour {
 
     public float maxSpeed = 10f;
+    public Particle particle_prefab;
     private Rigidbody2D player;
 
     void Start () {
