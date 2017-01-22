@@ -57,7 +57,7 @@
 					discard;
 				}
 				fixed4 o = lerp(_Color, _BColor, 1-(_Range-dist)/_BWidth);
-				fixed4 fade = float4(1,1,1,(1-_Range)*(1-_Fade));
+				fixed4 fade = float4(1,1,1,1-_Range*_Fade);
 				o.a *= 1 - (_Range-dist) / _Width;
 				return o*fade;
 			}
