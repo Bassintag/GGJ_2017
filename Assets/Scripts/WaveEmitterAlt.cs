@@ -95,6 +95,7 @@ public class WaveEmitterAlt : MonoBehaviour {
         resetting = true;
         if (moving_emitter != null)
             moving_emitter.paused = true;
+        UIManager.instance.AddDeath();
         StartCoroutine(Reset());
     }
 
