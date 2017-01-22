@@ -13,7 +13,8 @@ public class UIManager : MonoBehaviour {
             Destroy(gameObject);
         instance = this;
         DontDestroyOnLoad(this);
-        Reset();
+        start = Time.time;
+        deaths = 0;
 	}
 
     public void Reset ()
