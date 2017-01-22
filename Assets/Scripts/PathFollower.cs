@@ -7,6 +7,7 @@ public class PathFollower : MonoBehaviour {
     public Vector2[] path;
     public float speed = 1;
     public bool looping = true;
+    public bool rotate = true;
 
     private bool _reversed;
     private int _target_id;
@@ -25,6 +26,7 @@ public class PathFollower : MonoBehaviour {
         float rel_speed = speed * Time.deltaTime;
         if (rel.magnitude < rel_speed)
         {
+            transform.eulerAngles = new Vector3(0, 0, Mathf.Atan2(transform.position.y - target.y, transform.position.x - target.x) * Mathf.Rad2Deg);
             transform.position = target;
             if (looping || !_reversed)
             {
