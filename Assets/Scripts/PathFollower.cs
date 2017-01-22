@@ -8,13 +8,14 @@ public class PathFollower : MonoBehaviour {
     public float speed = 1;
     public bool looping = true;
 
-    private bool _reverse;
+    private bool _reversed;
     private int _target_id;
 
     public Vector2 target { get { return path[_target_id]; } }
 
 	void Start ()
     {
+        transform.position = target;
         _target_id = 0;
 	}
 	
@@ -25,7 +26,24 @@ public class PathFollower : MonoBehaviour {
         if (rel.magnitude < rel_speed)
         {
             transform.position = target;
-            _target_id = (_target_id + 1) % path.Length;
+            if (looping || !_reversed)
+            {
+                _target_id = (_target_id + 1) % path.Length;
+                if (!looping && _target_id == 0)
+                {
+                    _target_id = path.Length - 2;
+                    _reversed = true;
+                }
+            }
+            else
+            {
+                _target_id = (_target_id - 1);
+                if (_target_id < 0)
+                {
+                    _target_id = 1;
+                    _reversed = false;
+                }
+            }
         }
         else
             transform.position += (Vector3)rel.normalized * rel_speed;
@@ -34,7 +52,10 @@ public class PathFollower : MonoBehaviour {
     void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        for (int i = 0; i < path.Length; i++)
+        int count = path.Length;
+        if (!looping)
+            count -= 1;
+        for (int i = 0; i < count; i++)
         {
             Vector2 from = path[i];
             Vector2 to = path[(i + 1) % path.Length];
